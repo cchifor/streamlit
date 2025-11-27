@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import time  # To simulate AI "thinking" time
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -8,6 +9,36 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
+
+# --- HELPER: MOCK LLM ENGINE ---
+def mock_llm_response(prompt):
+    """
+    Simulates an LLM RAG (Retrieval Augmented Generation) response 
+    by looking for keywords in the user's prompt.
+    """
+    prompt_lower = prompt.lower()
+    
+    # Knowledge Base (Simulated RAG)
+    if "calls" in prompt_lower and "total" in prompt_lower:
+        return "Based on the dataset, we analyzed a total of **~25,000 calls**. Out of these, 3,229 had competitive mentions, but only **73** contained substantive discussions about Quipli."
+    
+    elif "threat" in prompt_lower or "concern" in prompt_lower:
+        return "The overall verdict is **LOW CONCERN**. Only 0.29% of total calls mentioned Quipli significantly. The threat level breakdown is:\n- High Threat: 13 calls (20.6%)\n- Medium Threat: 40 calls (63.5%)\n- Low Threat: 10 calls (15.9%)"
+    
+    elif "weakness" in prompt_lower or "improve" in prompt_lower:
+        return "Prospects perceive Quipli as having a more modern 'website-first' interface. We need to improve in these areas:\n1. Online Booking UX\n2. Pricing perception for small operators\n3. Onboarding simplicity"
+    
+    elif "win" in prompt_lower or "strength" in prompt_lower:
+        return "We win against Quipli in **Operational Depth**. Our key strengths are:\n- 43 years of industry experience\n- Advanced ROI & Utilization reporting\n- Deep maintenance and work order workflows"
+    
+    elif "price" in prompt_lower or "cost" in prompt_lower:
+        return "Price is a known friction point. 14 calls identified 'Price Objection' as a deal blocker, specifically regarding monthly recurring costs and setup fees during slow seasons."
+    
+    elif "summary" in prompt_lower or "executive" in prompt_lower:
+        return "Here is the Executive Summary:\n\n**Verdict:** Low Concern.\n**Key Stat:** Only 73 calls (0.29%) out of 25k contained real Quipli discussions.\n**Action:** Monitor the situation, but do not over-invest. Focus on improving Online Booking UX to neutralize their main advantage."
+    
+    else:
+        return "I can answer questions about call volume, threat levels, Quipli's weaknesses, or our winning strategies. Try asking: *'What is the threat level?'* or *'Why do we lose deals?'*"
 
 # --- STYLING & SIDEBAR ---
 with st.sidebar:
@@ -48,10 +79,16 @@ with col4:
         unsafe_allow_html=True
     )
 
-st.markdown(" > *'Out of ~25,000 total calls, only 73 contain substantive Quipli discussions[cite: 7]. This does not indicate a significant competitive threat.'*")
+st.markdown(" > *'Out of ~25,000 total calls, only 73 contain substantive Quipli discussions. This does not indicate a significant competitive threat.'*")
 
 # --- TABS FOR DETAILED SECTIONS ---
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Funnel & Threat Analysis", "🧱 Deal Blockers", "⚔️ Battlecard & Positioning", "🚀 Recommendations"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📊 Funnel & Threat Analysis", 
+    "🧱 Deal Blockers", 
+    "⚔️ Battlecard & Positioning", 
+    "🚀 Recommendations",
+    "💬 Chat with Data (Demo)"  # <--- NEW TAB
+])
 
 # --- TAB 1: FUNNEL & THREATS ---
 with tab1:
@@ -59,13 +96,12 @@ with tab1:
     
     with col_left:
         st.subheader("Call Volume Funnel")
-        # Data for Funnel [cite: 16-22]
+        # Data for Funnel
         funnel_data = pd.DataFrame({
             'Stage': ["Total Calls", "Competitive Mentions", "Quipli Discussions", "Sales Calls"],
             'Count': [25000, 3229, 73, 63]
         })
         
-        # Using Altair for Funnel visualization (Native Streamlit)
         c = alt.Chart(funnel_data).mark_bar().encode(
             x='Count:Q',
             y=alt.Y('Stage:N', sort=None),
@@ -73,17 +109,16 @@ with tab1:
         ).properties(title="Conversion to Competitive Threat")
         
         st.altair_chart(c, use_container_width=True)
-        st.caption("Only 0.29% of calls contain substantive Quipli discussions [cite: 14]")
+        st.caption("Only 0.29% of calls contain substantive Quipli discussions")
 
     with col_right:
         st.subheader("Threat Level Distribution")
-        # Data for Donut Chart [cite: 49]
+        # Data for Donut Chart
         threat_data = pd.DataFrame({
             "Level": ["High Threat", "Medium Threat", "Low Threat"],
             "Count": [13, 40, 10]
         })
         
-        # Using Altair for Donut/Pie Chart
         base = alt.Chart(threat_data).encode(theta=alt.Theta("Count", stack=True))
         pie = base.mark_arc(outerRadius=120).encode(
             color=alt.Color("Level"),
@@ -91,30 +126,27 @@ with tab1:
             tooltip=["Level", "Count"]
         )
         st.altair_chart(pie, use_container_width=True)
-        st.caption("Only 20.6% of identified calls show a high competitive threat [cite: 57]")
+        st.caption("Only 20.6% of identified calls show a high competitive threat")
 
     # Perception Keywords
     st.subheader("How Prospects Perceive Quipli")
-    # Data [cite: 52-54]
     keywords_data = pd.DataFrame({
         "Keyword": ["Website", "Basic", "Simple", "Modern"],
         "Frequency": [17, 15, 10, 8]
     })
     st.bar_chart(keywords_data.set_index("Keyword"), color="#FF4B4B")
-    st.markdown("**Key Insight:** Quipli is perceived as 'modern' and 'website-first'[cite: 58].")
+    st.markdown("**Key Insight:** Quipli is perceived as 'modern' and 'website-first'.")
 
 # --- TAB 2: DEAL BLOCKERS ---
 with tab2:
     st.subheader("Deal Blocker Analysis")
-    st.markdown("Primary reasons cited by prospects in the 63 sales calls[cite: 80]:")
+    st.markdown("Primary reasons cited by prospects in the 63 sales calls:")
     
-    # Data from Page 3 [cite: 91-107]
     blocker_data = pd.DataFrame({
         "Reason": ["Timing/Contract", "Price Objection", "Switching Cost", "Comparing Alternatives", "Missing Features"],
         "Count": [17, 14, 14, 10, 7]
     })
     
-    # Simple Streamlit Bar Chart
     st.bar_chart(blocker_data.set_index("Reason"))
     
     with st.expander("See Detail Context"):
@@ -134,24 +166,23 @@ with tab3:
     with col_pos:
         st.success("✅ Where POR Wins")
         st.markdown("""
-        * **Industry Experience:** 43 years & customer trust [cite: 62]
-        * **Operational Depth:** Maintenance, work orders [cite: 63]
-        * **Reporting:** ROI, utilization, unit-level financials [cite: 64]
-        * **Scalability:** From Essentials to Elite [cite: 65]
+        * **Industry Experience:** 43 years & customer trust
+        * **Operational Depth:** Maintenance, work orders
+        * **Reporting:** ROI, utilization, unit-level financials
+        * **Scalability:** From Essentials to Elite
         """)
         
     with col_neg:
         st.error("⚠️ Where We Need to Improve")
         st.markdown("""
-        * **UX:** Online booking perceived as less modern than Quipli [cite: 70]
-        * **Pricing:** Seen as more expensive for small operators [cite: 72]
-        * **Onboarding:** Quipli seen as easier to start [cite: 73]
+        * **UX:** Online booking perceived as less modern than Quipli
+        * **Pricing:** Seen as more expensive for small operators
+        * **Onboarding:** Quipli seen as easier to start
         """)
     
     st.divider()
     st.subheader("Attack & Defend Strategies")
     
-    # Comparison table [cite: 79]
     strategy_data = {
         "Area": ["Operational Depth", "Reporting", "Business Focus", "Track Record", "Serialized Assets"],
         "Quipli Weakness": [
@@ -174,7 +205,7 @@ with tab3:
 # --- TAB 4: RECOMMENDATIONS ---
 with tab4:
     st.subheader("Strategic Recommendations")
-    # [cite: 119-135]
+    
     c1, c2 = st.columns(2)
     
     with c1:
@@ -195,6 +226,39 @@ with tab4:
         st.caption("Impact: High | Effort: Medium")
         st.warning("Pull fresh SFDC data to determine actual win/loss rates. Current data is stale.")
 
+# --- TAB 5: CHAT WITH DATA (NEW) ---
+with tab5:
+    st.subheader("💬 AI Analyst (Demo)")
+    st.markdown("Ask questions about the competitive report. *Try asking: 'What is the threat level?' or 'How many calls were analyzed?'*")
+
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+        # Add a welcome message
+        st.session_state.messages.append({"role": "assistant", "content": "Hello! I have analyzed the Quipli Intelligence Report. What would you like to know?"})
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Accept user input
+    if prompt := st.chat_input("Ask a question about the data..."):
+        # 1. Display user message
+        st.chat_message("user").markdown(prompt)
+        # 2. Add user message to history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # 3. Generate response (Simulated)
+        with st.chat_message("assistant"):
+            with st.spinner("Analyzing report data..."):
+                time.sleep(1) # Simulate delay
+                response = mock_llm_response(prompt)
+                st.markdown(response)
+        
+        # 4. Add assistant response to history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
 # --- FOOTER ---
 st.divider()
-st.caption("Confidential | Point of Rental Competitive Intelligence Report")
+st.caption("Confidential | Point of Rental Competitive Intelligence Report | AI Demo Mode Active")
