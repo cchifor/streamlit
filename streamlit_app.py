@@ -48,7 +48,7 @@ with col4:
         unsafe_allow_html=True
     )
 
-[cite_start]st.markdown(" > *'Out of ~25,000 total calls, only 73 contain substantive Quipli discussions[cite: 7]. This does not indicate a significant competitive threat.'*")
+st.markdown(" > *'Out of ~25,000 total calls, only 73 contain substantive Quipli discussions[cite: 7]. This does not indicate a significant competitive threat.'*")
 
 # --- TABS FOR DETAILED SECTIONS ---
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Funnel & Threat Analysis", "🧱 Deal Blockers", "⚔️ Battlecard & Positioning", "🚀 Recommendations"])
@@ -59,7 +59,7 @@ with tab1:
     
     with col_left:
         st.subheader("Call Volume Funnel")
-        # [cite_start]Data for Funnel [cite: 16-22]
+        # Data for Funnel [cite: 16-22]
         funnel_data = pd.DataFrame({
             'Stage': ["Total Calls", "Competitive Mentions", "Quipli Discussions", "Sales Calls"],
             'Count': [25000, 3229, 73, 63]
@@ -73,11 +73,11 @@ with tab1:
         ).properties(title="Conversion to Competitive Threat")
         
         st.altair_chart(c, use_container_width=True)
-        [cite_start]st.caption("Only 0.29% of calls contain substantive Quipli discussions [cite: 14]")
+        st.caption("Only 0.29% of calls contain substantive Quipli discussions [cite: 14]")
 
     with col_right:
         st.subheader("Threat Level Distribution")
-        # [cite_start]Data for Donut Chart [cite: 49]
+        # Data for Donut Chart [cite: 49]
         threat_data = pd.DataFrame({
             "Level": ["High Threat", "Medium Threat", "Low Threat"],
             "Count": [13, 40, 10]
@@ -91,24 +91,24 @@ with tab1:
             tooltip=["Level", "Count"]
         )
         st.altair_chart(pie, use_container_width=True)
-        [cite_start]st.caption("Only 20.6% of identified calls show a high competitive threat [cite: 57]")
+        st.caption("Only 20.6% of identified calls show a high competitive threat [cite: 57]")
 
     # Perception Keywords
     st.subheader("How Prospects Perceive Quipli")
-    # [cite_start]Data [cite: 52-54]
+    # Data [cite: 52-54]
     keywords_data = pd.DataFrame({
         "Keyword": ["Website", "Basic", "Simple", "Modern"],
         "Frequency": [17, 15, 10, 8]
     })
     st.bar_chart(keywords_data.set_index("Keyword"), color="#FF4B4B")
-    [cite_start]st.markdown("**Key Insight:** Quipli is perceived as 'modern' and 'website-first'[cite: 58].")
+    st.markdown("**Key Insight:** Quipli is perceived as 'modern' and 'website-first'[cite: 58].")
 
 # --- TAB 2: DEAL BLOCKERS ---
 with tab2:
     st.subheader("Deal Blocker Analysis")
-    [cite_start]st.markdown("Primary reasons cited by prospects in the 63 sales calls[cite: 80]:")
+    st.markdown("Primary reasons cited by prospects in the 63 sales calls[cite: 80]:")
     
-    # [cite_start]Data from Page 3 [cite: 91-107]
+    # Data from Page 3 [cite: 91-107]
     blocker_data = pd.DataFrame({
         "Reason": ["Timing/Contract", "Price Objection", "Switching Cost", "Comparing Alternatives", "Missing Features"],
         "Count": [17, 14, 14, 10, 7]
@@ -134,24 +134,24 @@ with tab3:
     with col_pos:
         st.success("✅ Where POR Wins")
         st.markdown("""
-        * [cite_start]**Industry Experience:** 43 years & customer trust [cite: 62]
-        * [cite_start]**Operational Depth:** Maintenance, work orders [cite: 63]
-        * [cite_start]**Reporting:** ROI, utilization, unit-level financials [cite: 64]
-        * [cite_start]**Scalability:** From Essentials to Elite [cite: 65]
+        * **Industry Experience:** 43 years & customer trust [cite: 62]
+        * **Operational Depth:** Maintenance, work orders [cite: 63]
+        * **Reporting:** ROI, utilization, unit-level financials [cite: 64]
+        * **Scalability:** From Essentials to Elite [cite: 65]
         """)
         
     with col_neg:
         st.error("⚠️ Where We Need to Improve")
         st.markdown("""
-        * [cite_start]**UX:** Online booking perceived as less modern than Quipli [cite: 70]
-        * [cite_start]**Pricing:** Seen as more expensive for small operators [cite: 72]
-        * [cite_start]**Onboarding:** Quipli seen as easier to start [cite: 73]
+        * **UX:** Online booking perceived as less modern than Quipli [cite: 70]
+        * **Pricing:** Seen as more expensive for small operators [cite: 72]
+        * **Onboarding:** Quipli seen as easier to start [cite: 73]
         """)
     
     st.divider()
     st.subheader("Attack & Defend Strategies")
     
-    # [cite_start]Comparison table [cite: 79]
+    # Comparison table [cite: 79]
     strategy_data = {
         "Area": ["Operational Depth", "Reporting", "Business Focus", "Track Record", "Serialized Assets"],
         "Quipli Weakness": [
@@ -174,7 +174,7 @@ with tab3:
 # --- TAB 4: RECOMMENDATIONS ---
 with tab4:
     st.subheader("Strategic Recommendations")
-    [cite_start]# [cite: 119-135]
+    # [cite: 119-135]
     c1, c2 = st.columns(2)
     
     with c1:
